@@ -1,0 +1,116 @@
+{% extends "child/base.html" %}
+
+{% block title %}CYP{% endblock %}
+
+{% block content %}
+
+<div class="wrapper">
+
+  <!-- Page Content  -->
+  <div id="content">
+    <div class="container-fluid">
+
+      <div class="container">
+
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#child-details">CYP Details</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#groups">Groups</a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div id="child-details" class="tab-pane active mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tr><td style="font-weight: bold; border: none">First Name</td><td style="border: none">{{ child.first_name }}</td></tr>
+                        <tr><td style="font-weight: bold">Last Name</td><td>{{ child.last_name }}</td></tr>
+                        <tr><td style="font-weight: bold">Gender</td><td>{{ child.get_gender_display }} {% if child.pronouns %}({{ child.pronouns }}){% endif %}</td></tr>
+                        <tr><td style="font-weight: bold">Date of birth</td><td>{{ child.date_of_birth }}</td></tr>
+                        <tr><td style="font-weight: bold">Age</td><td>{{ child.get_age }}</td></tr>
+                        <tr><td style="font-weight: bold">Parent/Guardian</td><td class="btn-link"><a href="{{ child.client.get_absolute_url }}">{{ child.client.first_name }} {{ child.client.last_name }} ({{ child.relationship_to_client }})</a></td></tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tr><td style="font-weight: bold; border: none">Active</td><td style="border: none">{% if child.active %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</td></tr>
+                        <tr><td style="font-weight: bold">Activies consent</td><td>{% if child.activities_consent %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</td></tr>
+                        <tr><td style="font-weight: bold">Photography consent</td><td>{% if child.photography_consent %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</td></tr>
+                        <tr><td style="font-weight: bold">Peer volunteer</td><td>{% if child.is_peer_volunteer %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</td></tr>
+                        <tr><td style="font-weight: bold">School</td><td>{{ child.school }}</td></tr>
+                        <tr><td style="font-weight: bold">Class</td><td>{{ child.school_class }}</td></tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="child-disabilities ml-2 mr-2 mt-3 mb-5">
+                  <p style="font-weight: bold">Disabilities: <br>{{ disabilities|linebreaks }}</p>
+                </div>
+                {% if child.disability_details %}
+                  <div class="child-disability-details ml-2 mr-2 mt-3 mb-5">
+                    <p style="font-weight: bold">Disability Details: <br>{{ child.disability_details|linebreaks }}</p>
+                  </div>
+                {% endif %}
+                <div class="child-languages ml-2 mr-2 mt-3 mb-5">
+                  <p style="font-weight: bold">Languages spoken: <br>{{ child.languages_spoken|linebreaks }}</p>
+                </div>
+                <div class="child-notes ml-2 mr-2 mt-3 mb-5">
+                  <p style="font-weight: bold">Notes: <br>{{ child.notes|linebreaks }}</p>
+                </div>
+                <a href="{{ child.get_edit_url }}" class="btn btn-primary">Edit CYP</a>
+
+              </div>
+            </div>
+          </div>
+
+          <div id="groups" class="tab-pane mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h4>Groups</h4>
+                {% if child.bookings.all %}
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead class="thead-light">
+                            <tr>
+                              <th>Group</th>
+                              <th>Start date</th>
+                              <th></th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          {% for booking in child.bookings.all %}
+                            <tr>
+                              <td class="btn-link"><a href="{{ booking.group.get_absolute_url }}">{{ booking.group.group_type.name }}</td>
+                              <td>{{ booking.group.start_date }}</td>
+                              <td><a href="/childrensgroup/groupbooking/{{ booking.pk }}/edit?referrer=child"><i class="fas fa-pencil-alt"></i></a></td>
+                              <td><a href="/childrensgroup/groupbooking/{{ booking.pk }}/delete?referrer=child"><i class="fas fa-trash"></i></a></td>
+                            </tr>
+                          {% endfor %}
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This CYP does not have any group bookings</p>
+                {% endif %}
+                <a href="/childrensgroup/groupbooking/create?child={{ child.pk }}&referrer=child" class="btn btn-primary">Add Booking</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

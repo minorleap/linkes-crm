@@ -1,0 +1,110 @@
+tfoot {
+  font-weight: bold;
+}
+
+.btn.btn-red {
+  background: #239dd1;
+  color: #fff;
+  border: none;
+  box-shadow: none;
+}
+
+.modal-button {
+  background-color: #239dd1;
+  padding: 0.3vw 1vw;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-block;
+  color: #fff;
+  margin-bottom: 2px;
+  transition: background 0.4s ease-out
+}
+
+.modal-button:hover {
+  background-color: #c70512;
+  color: #fff;
+}
+
+.table .modal-btn-container {
+  vertical-align: middle;
+}
+
+.modal-dialog {
+  background: white;
+  border-radius: 15px;
+}
+
+.modal-title {
+  padding: 30px 30px 10px 30px;
+  font-size: 30px;
+  font-family: "Open Sans", Arial, Tahoma, sans-serif;
+  color: #239dd1;
+  font-weight: 500;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  border-radius: 10px;
+}
+
+.modal-body {
+  padding: 10px 30px 30px;
+}
+
+body {
+    font-family: "Open Sans", Arial, Tahoma, sans-serif;
+    background: #fafafa;
+}
+
+p {
+    font-family: "Open Sans", Arial, Tahoma, sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #111;
+}
+
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+    margin: 40px 0;
+}
+
+
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}

@@ -1,0 +1,72 @@
+{% extends "staff/base.html" %}
+
+{% block title %}Staff{% endblock %}
+
+{% block content %}
+
+<div class="wrapper">
+
+  <!-- Page Content  -->
+  <div id="content">
+    <div class="container-fluid">
+
+      <div class="container">
+
+        <div id="staff-details" class="mt-5">
+          <div class="card bg-light">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-6">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tr><td style="font-weight: bold; border: none">First Name</td><td style="border: none">{{ staff.first_name }}</td></tr>
+                      <tr><td style="font-weight: bold">Last Name</td><td>{{ staff.last_name}}</td></tr>
+                      <tr><td style="font-weight: bold">Address</td><td>{{ staff.get_address }}, {{ staff.postcode }}</td></tr>
+                      <tr><td style="font-weight: bold">Active</td><td>{% if staff.active %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</td></tr>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tr><td style="font-weight: bold">Town</td><td>{{ staff.town }}</td></tr>
+                      <tr><td style="font-weight: bold">Phone</td><td>{{ staff.phone }}</td></tr>
+                      <tr><td style="font-weight: bold">Email</td><td>{{ staff.email }}</td></tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="staff-notes ml-2 mr-2 mt-3 mb-5">
+                <p style="font-weight: bold">Notes: <br>{{ staff.notes|linebreaks }}</p>
+              </div>
+              <a href="{{ staff.get_edit_url }}" class="btn btn-primary">Edit Staff</a>
+
+              <h4 class="mt-5">Roles</h4>
+              {% if roles %}
+                <div class="row mt-3">
+                  <div class="col-4">
+                    <div class="table-responsive">
+                      <table class="table">
+                        {% for role in roles %}
+                          <tr>
+                            <td>{{ role }}</td>
+                            <td><a href="/staff/role/{{ role.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                          </tr>
+                        {% endfor %}
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              {% else %}
+                <p class="mt-2">This staff member does not have any roles</p>
+              {% endif %}
+              <a href="/staff/role/create?staff={{ staff.pk }}" class="btn btn-primary">Add Role</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "child/base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}Children{% endblock %}
+
+{% block content %}
+  <div class="wrapper">
+
+
+    <!-- Page Content  -->
+    <div id="content">
+      <div class="container-fluid">
+        <div class="card bg-light no-print">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-8">
+                <form id="filter-form" method="get" autocomplete="off">
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-4">
+                        <h6 class="mt-3">First Name</h6>
+                        {% render_field child_filter.form.first_name %}
+                        <h6 class="mt-3">Surname</h6>
+                        {% render_field child_filter.form.last_name %}
+                        <h6 class="mt-3">School</h6>
+                        {% render_field child_filter.form.school %}
+                      </div>
+                      <div class="col-4">
+                        <h6 class="mt-3">Min Age</h6>
+                        {% render_field child_filter.form.min_age %}
+                        <h6 class="mt-3">Max Age</h6>
+                        {% render_field child_filter.form.max_age %}
+                        <input type="submit" class="btn btn-primary" value="Search" style="width: 100%; margin-top: 42px" />
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table mt-5">
+            <thead class="thead-light">
+              <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>School</th>
+                <th>Class</th>
+                <th>Groups</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for child in child_filter.qs %}
+                <tr>
+                  <td><a href="{{ child.get_absolute_url }}" class="btn-link">{{ child.first_name }} {{ child.last_name }}</a></td>
+                  <td>{{ child.get_age }}</td>
+                  <td>{{ child.school }}</td>
+                  <td>{{ child.school_class }}</td>
+                  <td>{{ child.get_groups }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

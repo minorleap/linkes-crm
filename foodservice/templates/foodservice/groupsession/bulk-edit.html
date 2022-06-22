@@ -1,0 +1,43 @@
+{% extends "foodservice/base.html" %}
+
+{% load crispy_forms_tags %}
+
+**groupsession/bulk-edit.html**
+
+{% block title %}Bulk Add Group Session{% endblock %}
+
+{% block content %}
+  <div class="container text-center">
+    <h2 class="mt-5">Bulk Add Group Session</h2>
+    <form action="" method="post" class="justify-content-center">
+      {% csrf_token %}
+      {{ bulk_group_session_form.group|as_crispy_field }}
+      <div class="row mt-5">
+        <div class="col-6">
+          <div class="form-group">
+            <label>Group</label>
+            <input type="text" value="{{ group.group_type.name }}" class="textinput textInput form-control" readonly>
+          </div>
+          {{ bulk_group_session_form.start_date|as_crispy_field }}
+          {{ bulk_group_session_form.end_date|as_crispy_field }}
+          {{ bulk_group_session_form.time|as_crispy_field }}
+        </div>
+        <div class="col-3 text-left offset-2 mt-4">
+          {{ bulk_group_session_form.monday|as_crispy_field }}
+          {{ bulk_group_session_form.tuesday|as_crispy_field }}
+          {{ bulk_group_session_form.wednesday|as_crispy_field }}
+          {{ bulk_group_session_form.thursday|as_crispy_field }}
+          {{ bulk_group_session_form.friday|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-5 mb-5">
+        <div class="col-6">
+          <a href="/foodservice/group/{{ group.pk }}#group-sessions" role="button" class="btn btn-primary btn-block">Cancel</a>
+        </div>
+        <div class="col-6">
+          <button type="submit" class="btn btn-block btn-primary">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

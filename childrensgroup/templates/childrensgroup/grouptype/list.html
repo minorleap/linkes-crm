@@ -1,0 +1,36 @@
+{% extends "childrensgroup/base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}Group Types{% endblock %}
+
+{% block content %}
+  <div class="wrapper">
+
+
+    <!-- Page Content  -->
+    <div id="content">
+      <div class="container-fluid">
+        <div class="container">
+          <div class="card bg-light">
+            <div class="card-body">
+              <h4 class="mb-4">Group Types</h4>
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                    {% for group_type in group_types %}
+                      <tr>
+                        <td class="btn-link"><a href="{{ group_type.get_absolute_url }}">{{ group_type.name }}</a></td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <a href="/childrensgroup/grouptype/create" class="btn btn-primary">Add Group Type</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

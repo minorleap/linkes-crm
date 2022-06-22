@@ -1,0 +1,96 @@
+{% extends "staff/base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}Staff Timesheets{% endblock %}
+
+{% block content %}
+  <div class="wrapper">
+
+
+    <!-- Page Content  -->
+    <div id="content">
+      <div class="container-fluid">
+        <div class="card bg-light no-print">
+          <div class="card-body">
+            <div class="col-6">
+              <h4 class="card-title text-center">Week Commencing</h4>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-1">
+                    <a href="/staff/timesheet?week_commencing={{previous_week|date:'Y-m-d'}}" class="btn btn-primary btn-block"><</a>
+                  </div>
+                  <div class="col-4">
+                    <form id="filter-form" method="get" autocomplete="off">
+                      <div class="form-group">
+                        {% render_field timesheets_filter.form.week_commencing %}
+                      </div>
+                    </form>
+                  </div>
+                  <div class="col-1">
+                    <a href="/staff/timesheet?week_commencing={{next_week|date:'Y-m-d'}}" class="btn btn-primary btn-block">></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <form method="POST">
+          {% csrf_token %}
+          {{ formset.non_form_errors.as_ul }}
+          {{ formset.non_field_errors.as_ul }}
+          {{ formset.management_form }}
+          <div class="table-responsive">
+            <table class="table mt-5">
+              <thead class="thead-light">
+                <tr class="text-center">
+                  <th style="width: 250px;">Staff</th>
+                  <th style="width: 250px;">Role</th>
+                  <th>Mon</th>
+                  <th>Tue</th>
+                  <th>Wed</th>
+                  <th>Thu</th>
+                  <th>Fri</th>
+                  <th>Sat</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for form in formset.forms %}
+                  <tr>
+                    <td>{{ form.staff}}</td>
+                    <td>{{ form.role}}</td>
+                    <td>{{ form.monday_hours }}</td>
+                    <td>{{ form.tuesday_hours }}</td>
+                    <td>{{ form.wednesday_hours }}</td>
+                    <td>{{ form.thursday_hours }}</td>
+                    <td>{{ form.friday_hours }}</td>
+                    <td>{{ form.saturday_hours }}</td>
+                  </tr>
+                  {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                  {% endfor %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <input type="submit" value="Save" class="btn btn-primary btn-large">
+      </div>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function () {
+      $('#id_week_commencing').on('change', function () {
+        $('#filter-form').submit();
+      });
+    });
+
+    $(function () {
+      $("#id_week_commencing").datepicker({
+        format:'yyyy-mm-dd',
+      });
+    });
+  </script>
+{% endblock %}

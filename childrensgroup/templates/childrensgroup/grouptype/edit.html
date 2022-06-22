@@ -1,0 +1,32 @@
+{% extends "childrensgroup/base.html" %}
+
+{% load crispy_forms_tags %}
+
+**grouptype/edit.html**
+
+{% block title %}Edit Group Type{% endblock %}
+
+{% block content %}
+  <div class="container text-center">
+    <h2 class="mt-5">Edit Group Type</h2>
+    <form action="" method="post" class="justify-content-center">
+      {% csrf_token %}
+      <div class="row mt-4">
+        <div class="col-3"></div>
+        <div class="col-6">
+          {{ group_type_form.name|as_crispy_field }}
+        </div>
+        <div class="col-3"></div>
+      </div>
+      <div class="row mt-4 mb-5">
+        <div class="col-3"></div>
+        <div class="col-3">
+          <a href="/childrensgroup" role="button" class="btn btn-primary btn-block">Cancel</a>
+        </div>
+        <div class="col-3">
+          <button type="submit" class="btn btn-block btn-primary">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

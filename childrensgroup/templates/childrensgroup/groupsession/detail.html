@@ -1,0 +1,50 @@
+{% extends "childrensgroup/base.html" %}
+
+{% block title %}Group Session{% endblock %}
+
+{% block content %}
+
+<div class="wrapper">
+
+  <!-- Page Content  -->
+  <div id="content">
+    <div class="container-fluid">
+
+      <div class="container">
+        <div id="groups">
+          <div class="card bg-light">
+            <div class="card-body">
+              <h4 class="btn-link mb-4"><a href="{{ group_session.group.get_absolute_url }}#group-sessions">{{ group_session }}</a></h4>
+              {% if bookers %}
+              <div class="row">
+                <div class="col-12">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tr>
+                        <th style="border:none">Name</th>
+                        <th style="border:none">Attended</th>
+                      </tr>
+                      {% for booker in bookers %}
+                        <tr>
+                          <td>{{ booker.first_name }} {{ booker.last_name}}</td>
+                          <td>
+                            <button id="add_attendance_btn_{{ booker.pk }}" onclick="add_attendance({{ booker.pk }}, {{ group_session.pk }})" class="btn btn-danger" {% if booker in attenders %} style="display: none" {% endif %}><i class="fas fa-times-circle" style="color: #FFF"></i></button>
+                            <button id="delete_attendance_btn_{{ booker.pk }}" onclick="delete_attendance({{ booker.pk }}, {{ group_session.pk }})" class="btn btn-success" {% if booker not in attenders %} style="display: none" {% endif %}><i class="fas fa-check-circle" style="color: #FFF"></i></button>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </table>
+                  </div>
+                </div>
+              </div>
+              {% else %}
+                <p class="mt-2">There are no bookings for this group yet</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

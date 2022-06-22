@@ -1,0 +1,244 @@
+{% extends "client/base.html" %}
+
+{% load crispy_forms_tags %}
+
+**client/edit.html**
+
+{% block title %}Edit Client{% endblock %}
+
+{% block content %}
+  <div class="container text-center">
+    <h2 class="mt-5">Edit Client</h2>
+    <form action="" method="post" class="justify-content-center">
+      {% csrf_token %}
+      <h4 class="mt-5">Client Details</h4>
+      <div class="row mt-5">
+        <div class="col-12">
+          {{ client_form.active|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-6">
+          {{ client_form.first_name|as_crispy_field }}
+          {{ client_form.date_of_birth|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ client_form.last_name|as_crispy_field }}
+          {{ client_form.health_status|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-6">
+          {{ client_form.address1|as_crispy_field }}
+          {{ client_form.address2|as_crispy_field }}
+          {{ client_form.address3|as_crispy_field }}
+          {{ client_form.email|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ client_form.postcode|as_crispy_field }}
+          {{ client_form.town|as_crispy_field }}
+          {{ client_form.phone|as_crispy_field }}
+        </div>
+      </div>
+      <h4 class="mt-5">Emergency Contact</h4>
+      <div class="row">
+        <div class="col-6">
+          {{ client_form.emergency_contact_name|as_crispy_field }}
+          {{ client_form.emergency_contact_relation|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ client_form.emergency_contact_phone|as_crispy_field }}
+        </div>
+      </div>
+      <h4 class="mt-5">GDPR Consent</h4>
+      <div class="row">
+        <div class="col-6">
+          {{ client_form.gdpr_consent|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ client_form.gdpr_consent_giver|as_crispy_field }}
+        </div>
+      </div>
+      <h4 class="mt-5">Notes</h4>
+      <div class="row">
+        <div class="col-12">
+          {{ client_form.notes|as_crispy_field }}
+        </div>
+      </div>
+      <h4 class="mt-5">Equal Opportunities</h4>
+      <div class="row mt-3" id="ethnicity">
+        <div class="col-6">
+          {{ client_form.ethnicity_category|as_crispy_field }}
+          {{ client_form.nationality|as_crispy_field }}
+          {{ client_form.country_of_origin|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ client_form.ethnicity_white|as_crispy_field }}
+          {{ client_form.ethnicity_asian|as_crispy_field }}
+          {{ client_form.ethnicity_african|as_crispy_field }}
+          {{ client_form.ethnicity_other|as_crispy_field }}
+          {{ client_form.ethnicity_specify|as_crispy_field }}
+          {{ client_form.first_language|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-5" id="gender">
+        <div class="col-6">
+          {{ client_form.gender|as_crispy_field }}
+          {{ client_form.pronouns|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ client_form.gender_specify|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-5" id="religion">
+        <div class="col-6">
+          {{ client_form.religion|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ client_form.religion_specify|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-5" id="sexual-orientation">
+        <div class="col-6">
+          {{ client_form.sexual_orientation|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ client_form.sexual_orientation_specify|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-6">
+          {{ client_form.married|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-5" id="disability-carer">
+        <div class="col-6 text-left">
+          {{ client_form.has_disability|as_crispy_field }}
+          {{ client_form.physical_impairment|as_crispy_field }}
+          {{ client_form.sensory_impairment|as_crispy_field }}
+          {{ client_form.mental_health_condition|as_crispy_field }}
+          {{ client_form.learning_disability|as_crispy_field }}
+          {{ client_form.hiv_cancer_ms|as_crispy_field }}
+        </div>
+        <div class="col-6 text-left">
+          {{ client_form.has_caring_responsibilities|as_crispy_field }}
+          {{ client_form.primary_carer_child|as_crispy_field }}
+          {{ client_form.primary_carer_disabled_child|as_crispy_field }}
+          {{ client_form.primary_carer_disabled_adult|as_crispy_field }}
+          {{ client_form.primary_carer_older_person|as_crispy_field }}
+          {{ client_form.secondary_carer|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-5 mb-5">
+        <div class="col-6">
+          <a href="/client/{{ client.pk }}" role="button" class="btn btn-primary btn-block">Cancel</a>
+        </div>
+        <div class="col-6">
+          <button type="submit" class="btn btn-block btn-primary">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <script>
+    $('#id_gdpr_consent').on('change', function() {
+      if ($('#id_gdpr_consent').val() === 'given_on_behalf') {
+        $('#id_gdpr_consent_giver').prop("disabled", false);
+      } else {
+        $('#id_gdpr_consent_giver').prop("disabled", true);
+        $('#id_gdpr_consent_giver').val('');
+      }
+    });
+
+    $('#id_ethnicity_category').on('change', function() {
+      let category = $('#id_ethnicity_category').val();
+      let ethnicities = ['white', 'asian', 'african', 'other'];
+      for (ethnicity of ethnicities) {
+        if (ethnicity !== category) {
+          $('#div_id_ethnicity_' + ethnicity).hide();
+          $('#id_ethnicity_' + ethnicity).val('');
+        }
+      }
+      if (category === 'mixed') {
+        $('#id_ethnicity_specify').prop( "disabled", false );
+      }
+      else {
+        $('#id_ethnicity_specify').prop( "disabled", true );
+        $('#id_ethnicity_specify').val('');
+      }
+      $('#div_id_ethnicity_' + category).show();
+    });
+
+    $('#id_ethnicity_white, #id_ethnicity_asian, #id_ethnicity_african, #id_ethnicity_mixed, #id_ethnicity_other').on('change', function() {
+      let category = $('#id_ethnicity_category').val();
+      let ethnicity = $('#id_ethnicity_' + category).val();
+      if (ethnicity === 'other' || category === 'mixed') {
+        $('#id_ethnicity_specify').prop( "disabled", false );
+      }
+      else {
+        $('#id_ethnicity_specify').prop( "disabled", true );
+        $('#id_ethnicity_specify').val('');
+      }
+    });
+
+    $('#id_gender').on('change', function() {
+      let gender = $('#id_gender').val();
+      if (gender === 'other') {
+        $('#id_gender_specify').prop( "disabled", false );
+      } else {
+        $('#id_gender_specify').val('');
+        $('#id_gender_specify').prop( "disabled", true );
+      }
+    });
+
+    $('#id_religion').on('change', function() {
+      let religion = $('#id_religion').val();
+      if (religion === 'other') {
+        $('#id_religion_specify').prop( "disabled", false );
+      } else {
+        $('#id_religion_specify').val('');
+        $('#id_religion_specify').prop( "disabled", true );
+      }
+    });
+
+    $('#id_sexual_orientation').on('change', function() {
+      let orientation = $('#id_sexual_orientation').val();
+      if (orientation === 'other') {
+        //$('#div_id_sexual_orientation_specify').show();
+        $('#id_sexual_orientation_specify').prop( "disabled", false );
+      } else {
+        $('#id_sexual_orientation_specify').val('');
+        //$('#div_id_sexual_orientation_specify').hide();
+        $('#id_sexual_orientation_specify').prop( "disabled", true );
+      }
+    });
+
+    $('#id_has_disability').on('change', function() {
+      if ($('#id_has_disability').is(":checked")) {
+        $('#div_id_physical_impairment, #div_id_sensory_impairment, #div_id_mental_health_condition, #div_id_learning_disability, #div_id_hiv_cancer_ms').show();
+      } else {
+        $('#div_id_physical_impairment, #div_id_sensory_impairment, #div_id_mental_health_condition, #div_id_learning_disability, #div_id_hiv_cancer_ms').hide();
+        $('#id_physical_impairment, #id_sensory_impairment, #id_mental_health_condition, #id_learning_disability, #id_hiv_cancer_ms').val('');
+      }
+    });
+
+    $('#id_has_caring_responsibilities').on('change', function() {
+      if ($('#id_has_caring_responsibilities').is(":checked")) {
+        $('#div_id_primary_carer_child, #div_id_primary_carer_disabled_child, #div_id_primary_carer_disabled_adult, #div_id_primary_carer_older_person, #div_id_secondary_carer').show();
+      } else {
+        $('#div_id_primary_carer_child, #div_id_primary_carer_disabled_child, #div_id_primary_carer_disabled_adult, #div_id_primary_carer_older_person, #div_id_secondary_carer').hide();
+        $('#id_primary_carer_child, #id_primary_carer_disabled_child, #id_primary_carer_disabled_adult, #id_primary_carer_older_person, #id_secondary_carer').val('');
+      }
+    });
+
+    $(document).ready(function() {
+      $('#id_gdpr_consent').trigger('change');
+      $('#id_ethnicity_category').trigger('change');
+      $('#id_ethnicity_white').trigger('change');
+      $('#id_gender').trigger('change');
+      $('#id_religion').trigger('change');
+      $('#id_sexual_orientation').trigger('change');
+      $('#id_has_disability').trigger('change');
+      $('#id_has_caring_responsibilities').trigger('change');
+    });
+  </script>
+{% endblock %}

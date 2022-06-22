@@ -1,0 +1,80 @@
+{% extends "foodhub/base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}Food Hub Collections{% endblock %}
+
+{% block content %}
+  <div class="wrapper">
+
+    <!-- Page Content  -->
+    <div id="content">
+      <div class="container-fluid">
+        <div class="card bg-light no-print">
+          <div class="card-body">
+            <div class="col-4">
+              <h4 class="card-title text-center">Collection Date</h4>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <form id="filter-form" method="get" autocomplete="off">
+                  <div class="form-group">
+                    {% render_field foodhub_collection_filter.form.date %}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h4 class="mt-5 mb-3">Collections for {{ date|date:"l jS F Y"}}</h4>
+        <div class="table-responsive">
+          <table class="table">
+            <thead class="thead-light">
+              <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Adults</th>
+                <th>CYP</th>
+                <th>Dietary Requirements</th>
+                <th>Notes</th>
+                <th class="no-print">Edit</th>
+                <th class="no-print">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for foodhub_collection in foodhub_collection_filter.qs %}
+                {% with foodhub_collection.client as client %}
+                  <tr>
+                    <td class="btn-link"><a href="{{ client.get_absolute_url }}">{{ client.first_name }} {{ client.last_name }}</a></td>
+                    <td>{{ client.get_address }}, {{ client.postcode }}</td>
+                    <td>{{ foodhub_collection.number_of_adults }}</td>
+                    <td>{{ foodhub_collection.number_of_children }}</td>
+                    <td>{{ foodhub_collection.get_dietary_requirements|join:", "|capfirst }}</td>
+                    <td>{{ foodhub_collection.notes }}</td>
+                    <td class="btn-link no-print"><a href="/foodhub/collection/{{ foodhub_collection.pk }}/edit?referrer=collection&date={{ request.GET.date}}">Edit</a></td>
+                    <td class="text-center no-print"><a href="/foodhub/collection/{{ foodhub_collection.pk }}/delete?referrer=list&date={{ request.GET.date}}"><i class="fas fa-trash"></i></a></td>
+                  </tr>
+                {% endwith %}
+              {% endfor %}
+              <tr><td style="font-weight: bold">Total: {{ foodhub_collection_filter.qs|length }}</td>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#id_date').on('change', function () {
+        $('#filter-form').submit();
+      });
+    });
+
+    $(function () {
+      $("#id_date").datepicker({
+        format:'yyyy-mm-dd',
+      });
+    });
+  </script>
+{% endblock %}

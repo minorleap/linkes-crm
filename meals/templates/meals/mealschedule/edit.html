@@ -1,0 +1,75 @@
+{% extends "meals/base.html" %}
+
+{% load crispy_forms_tags %}
+
+**mealschedule/edit.html**
+
+{% block title %}Meal Delivery Schedule{% endblock %}
+
+{% block content %}
+  <div class="container text-center">
+  <h2 class="mt-5">Meal Delivery Schedule</h2>
+  <form action="" method="post" class="justify-content-center" autocomplete="off">
+    {% csrf_token %}
+    {{ meal_schedule_form.client|as_crispy_field }}
+    <div class="row mt-5">
+      <div class="col-6">
+        <div class="form-group">
+          <label>Client</label>
+          <input type="text" value="{{ client.first_name }} {{ client.last_name }}" class="textinput textInput form-control" readonly>
+        </div>
+        {{ meal_schedule_form.start_date|as_crispy_field }}
+        {{ meal_schedule_form.number_of_adults|as_crispy_field }}
+      </div>
+      <div class="col-6">
+        {{ meal_schedule_form.status|as_crispy_field }}
+        {{ meal_schedule_form.end_date|as_crispy_field }}
+        {{ meal_schedule_form.number_of_children|as_crispy_field }}
+      </div>
+    </div>
+    <h4 class="mt-5 mb-4">Dietary Requirements</h4>
+    <div class="row">
+      <div class="col-6 mt-5">
+        {{ meal_schedule_form.diabetic|as_crispy_field }}
+        {{ meal_schedule_form.gluten_free|as_crispy_field }}
+        {{ meal_schedule_form.dairy_free|as_crispy_field }}
+        {{ meal_schedule_form.vegetarian|as_crispy_field }}
+        {{ meal_schedule_form.vegan|as_crispy_field }}
+        {{ meal_schedule_form.halal|as_crispy_field }}
+      </div>
+      <div class="col-6">
+        {{ meal_schedule_form.allergies|as_crispy_field }}
+      </div>
+    </div>
+    <h4 class="mt-5 mb-4">Delivery</h4>
+    <div class="row">
+      <div class="col-6 mt-5">
+        {{ meal_schedule_form.monday_delivery|as_crispy_field }}
+        {{ meal_schedule_form.wednesday_delivery|as_crispy_field }}
+        {{ meal_schedule_form.friday_delivery|as_crispy_field }}
+      </div>
+      <div class="col-6">
+        {{ meal_schedule_form.delivery_notes|as_crispy_field }}
+      </div>
+    </div>
+    <div class="row mt-5 mb-5">
+      <div class="col-6">
+        <a href="{{ client.get_absolute_url }}#meal-deliveries" role="button" class="btn btn-primary btn-block">Cancel</a>
+      </div>
+      <div class="col-6">
+        <button type="submit" class="btn btn-block btn-primary">Save</button>
+      </div>
+    </div>
+  </form>
+  </div>
+  <script>
+    $(function () {
+      $("#id_start_date").datepicker({
+        format:'dd/mm/yyyy',
+      });
+      $("#id_end_date").datepicker({
+        format:'dd/mm/yyyy',
+      });
+    });
+  </script>
+{% endblock %}

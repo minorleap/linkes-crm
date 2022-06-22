@@ -1,0 +1,65 @@
+{% extends "group/base.html" %}
+
+{% block title %}Group Type{% endblock %}
+
+{% block content %}
+
+<div class="wrapper">
+
+  <!-- Page Content  -->
+  <div id="content">
+    <div class="container-fluid">
+
+      <div class="container">
+        <div id="groups">
+          <div class="card bg-light">
+            <div class="card-body">
+              <h4 class="mb-4">{{ group_type.name }}</h4>
+              {% if group_type.groups.all %}
+              <h5 class="mt-5">Groups</h5>
+              <div class="row">
+                <div class="col-12">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tr>
+                        <th style="border:none">Start Date</th>
+                        <th style="border:none">End Date</th>
+                        <th style="border:none">Places booked</th>
+                        <th style="border:none">Creche places booked</th>
+                        <th style="border:none"></th>
+                        <th style="border:none"></th>
+                      </tr>
+                      {% for group in group_type.groups.all %}
+                        <tr>
+                          <td>{{ group.start_date }}</td>
+                          <td>{{ group.end_date }}</td>
+                          <td>{{ group.get_places_booked }}/{{ group.capacity }}</td>
+                          {% if group.creche_capacity %}
+                            <td>{{ group.get_creche_places_booked }}/{{ group.creche_capacity }}</td>
+                          {% else %}
+                            <td>-</td>
+                          {% endif %}
+                          <td class="btn-link"><a href="/group/group/{{ group.pk }}">Details</a></td>
+                          {% if group.bookings.all %}
+                            <td><button  class="btn" style="padding: 0px" onclick="alert('You cannot delete a group that has bookings')"><i class="fas fa-trash"></i></button></td>
+                          {% else %}
+                            <td><a href="/group/group/{{ group.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                          {% endif %}
+                        </tr>
+                      {% endfor %}
+                    </table>
+                  </div>
+                </div>
+              </div>
+              {% else %}
+                <p class="mt-2">This group type does not have any groups</p>
+              {% endif %}
+              <a href="/group/group/create?grouptype={{ group_type.pk }}" class="btn btn-primary">Add Group</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

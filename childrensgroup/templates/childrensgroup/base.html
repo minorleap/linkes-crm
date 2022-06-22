@@ -1,0 +1,134 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- jQuery CDN - Full version (=includes AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="{% static "css/childrensgroup.css" %}">
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"></script>
+
+    <!-- Fengyuan Chen's Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-dark navbar-expand-md justify-content-center" style="background-color: #239dd1;">
+    <a href="/" class="navbar-brand d-flex mr-auto">Linkes CRM</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse w-100" id="collapsingNavbar">
+      <ul class="navbar-nav w-100 justify-content-center">
+        <li class="nav-item ml-3 mr-3">
+          <a class="nav-link" href="/client">Clients</a>
+        </li>
+        <li class="nav-item ml-3 mr-3">
+          <a class="nav-link" href="/child">CYP</a>
+        </li>
+        <li class="nav-item ml-3 mr-3">
+          <a class="nav-link" href="/group">Groups</a>
+        </li>
+        <li class="nav-item ml-3 mr-3 active">
+          <a class="nav-link" href="/childrensgroup">CYP Groups</a>
+        </li>
+        <li class="nav-item ml-3 mr-3">
+          <a class="nav-link" href="/foodservice">Food Services</a>
+        </li>
+        <li class="nav-item dropdown ml-3 mr-3">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+            Services
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/meals">Meal Deliveries</a>
+            <a class="dropdown-item" href="/foodshopping">Shopping Deliveries</a>
+            <a class="dropdown-item" href="/halalshopping">Halal Collections</a>
+            <a class="dropdown-item" href="/phonecalls">Phone Calls</a>
+            <a class="dropdown-item" href="/foodbank">Foodbank Referrals</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown ml-3 mr-3">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+            Staff
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/staff">Records</a>
+            <!-- FEATURE NOT PAID FOR <a class="dropdown-item" href="/staff/timesheet">Timesheets</a> -->
+          </div>
+        </li>
+        <li class="nav-item dropdown ml-3 mr-3">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+            Reports
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/reports/clients">Clients</a>
+            <!-- FEATURE NOT PAID FOR <a class="dropdown-item" href="/reports/timesheets">Staff Hours</a> -->
+          </div>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav ml-auto justify-content-end">
+        <li class="nav-item">
+          <a class="nav-link" href="/account/logout">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  {% block content %}
+  {% endblock %}
+
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <script src="{% static "js/stickytabs.js" %}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+          $('.nav-tabs').stickyTabs();
+        });
+    </script>
+
+    <script>
+      $(document).ready(function() {
+        window.scrollTo(0, 0);
+      });
+    </script>
+
+    <script>
+      function add_attendance(pk, session_id) {
+        let url = '/childrensgroup/groupsession/' + session_id + '/addchild?child=' + pk;
+        $.get(url, function(data, status){
+          $("#add_attendance_btn_" + pk).hide()
+          $("#delete_attendance_btn_" + pk).show()
+          return;
+        });
+      }
+
+      function delete_attendance(pk, session_id) {
+        let url = '/childrensgroup/groupsession/' + session_id + '/removechild?child=' + pk;
+        $.get(url, function(data, status){
+          $("#delete_attendance_btn_" + pk).hide()
+          $("#add_attendance_btn_" + pk).show()
+          return;
+        });
+      }
+    </script>
+
+</body>
+
+</html>

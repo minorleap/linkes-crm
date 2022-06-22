@@ -1,0 +1,58 @@
+{% extends "staff/base.html" %}
+
+{% load crispy_forms_tags %}
+
+**staff/edit.html**
+
+{% block title %}Edit Staff{% endblock %}
+
+{% block content %}
+  <div class="container text-center">
+    <h2 class="mt-5">Edit Staff</h2>
+    <form action="" method="post" class="justify-content-center">
+      {% csrf_token %}
+      <h4 class="mt-5">Staff Details</h4>
+      <div class="row mt-5">
+        <div class="col-12">
+          {{ staff_form.active|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-6">
+          {{ staff_form.first_name|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ staff_form.last_name|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-6">
+          {{ staff_form.address1|as_crispy_field }}
+          {{ staff_form.address2|as_crispy_field }}
+          {{ staff_form.address3|as_crispy_field }}
+          {{ staff_form.email|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ staff_form.postcode|as_crispy_field }}
+          {{ staff_form.town|as_crispy_field }}
+          {{ staff_form.phone|as_crispy_field }}
+        </div>
+      </div>
+      <h4 class="mt-5">Notes</h4>
+      <div class="row">
+        <div class="col-12">
+          {{ staff_form.notes|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-5 mb-5">
+        <div class="col-6">
+          <a href="/staff/{{ staff.pk }}" role="button" class="btn btn-primary btn-block">Cancel</a>
+        </div>
+        <div class="col-6">
+          <button type="submit" class="btn btn-block btn-primary">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+{% endblock %}

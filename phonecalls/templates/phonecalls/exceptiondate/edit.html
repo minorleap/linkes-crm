@@ -1,0 +1,45 @@
+{% extends "phonecalls/base.html" %}
+
+{% load crispy_forms_tags %}
+
+**phonecalls/edit.html**
+
+{% block title %}Add Exception Date{% endblock %}
+
+{% block content %}
+  <div class="container text-center">
+  <h2 class="mt-5 mb-5">Add Exception Date</h2>
+    <form action="" method="post" class="justify-content-center" autocomplete="off">
+      {% csrf_token %}
+      {{ exception_date_form.schedule|as_crispy_field }}
+      <div class="row">
+        <div class="col-2"> </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label>Schedule</label>
+            <input type="text" value="{{ schedule }}" class="textinput textInput form-control" readonly>
+          </div>
+        </div>
+        <div class="col-4">
+          {{ exception_date_form.date|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-2"> </div>
+        <div class="col-4">
+          <a href="{{ schedule.client.get_absolute_url }}#phonecalls" role="button" class="btn btn-primary btn-block">Cancel</a>
+        </div>
+        <div class="col-4">
+          <button type="submit" class="btn btn-block btn-primary">Save</button>
+        </div>
+    </form>
+  </div>
+
+  <script>
+    $(function () {
+      $("#id_date").datepicker({
+        format:'dd/mm/yyyy',
+      });
+    });
+  </script>
+{% endblock %}

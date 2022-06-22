@@ -1,0 +1,829 @@
+{% extends "client/base.html" %}
+
+{% block title %}Clients{% endblock %}
+
+{% block content %}
+
+<div class="wrapper">
+
+  <!-- Page Content  -->
+  <div id="content">
+    <div class="container-fluid">
+
+      <div class="container">
+
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#client-details">Client Details</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#casenotes">Casenotes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#children">CYP</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#groups">Groups</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#food-services">Food Services</a>
+          </li>
+          <!--
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#meal-deliveries">Meals</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#shopping-deliveries">Shopping</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#halal-shopping">Halal</a>
+          </li>
+          -->
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#phonecalls">Phone Calls</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#foodbank">Foodbank Referrals</a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div id="client-details" class="tab-pane active mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tr><td style="font-weight: bold; border: none">First Name</td><td style="border: none">{{ client.first_name }}</td></tr>
+                        <tr><td style="font-weight: bold">Last Name</td><td>{{ client.last_name}}</td></tr>
+                        <tr><td style="font-weight: bold">Address</td><td>{{ client.get_address }}, {{ client.postcode }}</td></tr>
+                        <tr><td style="font-weight: bold">Town</td><td>{{ client.town }}</td></tr>
+                        <tr><td style="font-weight: bold">Phone</td><td>{{ client.phone }}</td></tr>
+                        <tr><td style="font-weight: bold">Email</td><td>{{ client.email }}</td></tr>
+                        <tr><td style="font-weight: bold">Gender</td><td>{{ client.get_gender_display }} {% if client.pronouns %}({{ client.pronouns }}){% endif %}</td></tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tr><td style="font-weight: bold; border: none">Health Status</td><td style="border: none">{{ client.get_health_status_display }}</td></tr>
+                        <tr><td style="font-weight: bold">Emergency Contact</td><td>{{ client.emergency_contact_name|default_if_none:''  }}</td></tr>
+                        <tr><td style="font-weight: bold">Emergency Contact Phone</td><td>{{ client.emergency_contact_phone|default_if_none:''  }}</td></tr>
+                        <tr><td style="font-weight: bold">Emergency Contact Relation</td><td>{{ client.emergency_contact_relation|default_if_none:''  }}</td></tr>
+                        <tr><td style="font-weight: bold">GDPR consent given by client</td><td>{% if client.gdpr_consent == 'given_by_client' %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</td></tr>
+                        <tr><td style="font-weight: bold">GDPR consent on behalf of client</td><td>{% if client.gdpr_consent == 'given_on_behalf' %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</td></tr>
+                        {% if client.gdpr_consent_giver %}<tr><td style="font-weight: bold">GDPR consent given by</td><td>{{ client.gdpr_consent_giver }}</td></tr>{% endif %}
+                        <tr><td style="font-weight: bold">Active</td><td>{% if client.active %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</td></tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="client-notes ml-2 mr-2 mt-3 mb-5">
+                  <p style="font-weight: bold">Notes: <br>{{ client.notes|linebreaks }}</p>
+                </div>
+                <a href="{{ client.get_edit_url }}" class="btn btn-primary">Edit Client</a>
+
+                <h4 class="mt-5">Referrals</h4>
+                {% if referrals %}
+                  <div class="row mt-3">
+                    <div class="col-4">
+                      <div class="table-responsive">
+                        <table class="table">
+                          {% for referral in referrals %}
+                            <tr>
+                              <td>{{ referral }}</td>
+                              <td><a href="/client/referral/{{ referral.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                            </tr>
+                          {% endfor %}
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This client does not have any referrals</p>
+                {% endif %}
+                <a href="/client/referral/create?client={{ client.pk }}" class="btn btn-primary">Add Referral</a>
+              </div>
+            </div>
+          </div>
+
+          <div id="casenotes" class="tab-pane mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h4>Casenotes</h4>
+                {% if client.casenotes.all %}
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead class="thead-light">
+                            <tr>
+                              <th>Date</th>
+                              <th>Note</th>
+                              <th>Edit</th>
+                              <th>Delete</th>
+                            </tr>
+                          </thead>
+                          {% for casenote in client.casenotes.all %}
+                            <tr>
+                              <td>{{ casenote.date }}</td>
+                              <td>{{ casenote.notes|linebreaks }}</td>
+                              <td><a href="/client/casenote/{{ casenote.pk }}/edit"><i class="fas fa-pencil-alt"></i></a></td>
+                              <td><a href="/client/casenote/{{ casenote.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                            </tr>
+                          {% endfor %}
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This client does not have any casenotes</p>
+                {% endif %}
+                <a href="/client/casenote/create?client={{ client.pk }}" class="btn btn-primary">Add Casenote</a>
+              </div>
+            </div>
+          </div>
+
+          <div id="children" class="tab-pane mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h4>CYP</h4>
+                {% if client.children.all %}
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead class="thead-light">
+                            <tr>
+                              <th>Name</th>
+                              <th>Age</th>
+                              <th>School</th>
+                              <th>Relation to CYP</th>
+                            </tr>
+                          </thead>
+                          {% for child in client.children.all %}
+                            <tr>
+                              <td class="btn-link"><a href="{{ child.get_absolute_url }}">{{ child }}</td>
+                              <td>{{ child.get_age }}</td>
+                              <td>{{ child.school }}</td>
+                              <td>{{ child.relationship_to_client }}</td>
+                            </tr>
+                          {% endfor %}
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This client is not linked to any CYP</p>
+                {% endif %}
+                <a href="/child/create?client={{ client.pk }}" class="btn btn-primary">Add CYP</a>
+              </div>
+            </div>
+          </div>
+
+          <div id="groups" class="tab-pane mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h4>Groups</h4>
+                {% if client.bookings.all %}
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead class="thead-light">
+                            <tr>
+                              <th>Group</th>
+                              <th>Start date</th>
+                              <th>Creche spaces</th>
+                              <th>Names of children</th>
+                              <th></th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          {% for booking in client.bookings.all %}
+                            <tr>
+                              <td class="btn-link"><a href="{{ booking.group.get_absolute_url }}">{{ booking.group.group_type.name }}</td>
+                              <td>{{ booking.group.start_date }}</td>
+                              <td>{{ booking.creche_spaces }}</td>
+                              <td>{{ booking.names_of_children|default:"" }}</td>
+                              <td><a href="/group/groupbooking/{{ booking.pk }}/edit?referrer=client"><i class="fas fa-pencil-alt"></i></a></td>
+                              <td><a href="/group/groupbooking/{{ booking.pk }}/delete?referrer=client"><i class="fas fa-trash"></i></a></td>
+                            </tr>
+                          {% endfor %}
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This client does not have any group bookings</p>
+                {% endif %}
+                <a href="/group/groupbooking/create?client={{ client.pk }}&referrer=client" class="btn btn-primary">Add Booking</a>
+              </div>
+            </div>
+          </div>
+
+          <div id="food-services" class="tab-pane mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h4>Food Services</h4>
+                {% if client.foodservice_bookings.all %}
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead class="thead-light">
+                            <tr>
+                              <th>Group</th>
+                              <th>Name</th>
+                              <th>Number of Adults</th>
+                              <th>Number of Children</th>
+                              <th></th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          {% for booking in client.foodservice_bookings.all %}
+                            <tr>
+                              <td class="btn-link"><a href="{{ booking.group.get_absolute_url }}">{{ booking.group.group_type.name }}</td>
+                              <td>{{ booking.group.name }}</td>
+                              <td>{{ booking.number_of_adults }}</td>
+                              <td>{{ booking.number_of_children }}</td>
+                              <td><a href="/foodservice/groupbooking/{{ booking.pk }}/edit?referrer=client"><i class="fas fa-pencil-alt"></i></a></td>
+                              <td><a href="/foodservice/groupbooking/{{ booking.pk }}/delete?referrer=client"><i class="fas fa-trash"></i></a></td>
+                            </tr>
+                          {% endfor %}
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This client does not have any food service bookings</p>
+                {% endif %}
+                <a href="/foodservice/groupbooking/create?client={{ client.pk }}&referrer=client" class="btn btn-primary">Add Booking</a>
+              </div>
+            </div>
+          </div>
+
+          <div id="meal-deliveries" class="container tab-pane fade mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                {% if not client.meals_schedule %}
+                  <p>This client does not have a Meal Delivery Schedule.</p>
+                  <a href="/meals/mealschedule/create?client={{ client.pk }}" class="btn btn-primary">Add Meal Delivery Schedule</a>
+                {% else %}
+                  <h4>Delivery Schedule</h4>
+                  <div class="row mt-3">
+                    <div class="col-6">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <tr><td style="font-weight: bold; border: none">Status</td><td style="border: none">{{ client.meals_schedule.get_status_display }}</td></tr>
+                          <tr><td style="font-weight: bold">Start Date</td><td>{{ client.meals_schedule.start_date }}</td></tr>
+                          <tr><td style="font-weight: bold">End Date</td><td>{{ client.meals_schedule.end_date }}</td></tr>
+                          <tr><td style="font-weight: bold">Dietary Requirements</td><td>{{ client.meals_schedule.get_dietary_requirements|join:", "|capfirst }}</td></tr>
+                          <tr><td style="font-weight: bold">Delivery Notes</td><td>{{ client.meals_schedule.delivery_notes }}</td></tr>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <tr><td style="font-weight: bold; border: none">Adults</td><td style="border: none">{{ client.meals_schedule.number_of_adults }}</td></tr>
+                          <tr><td style="font-weight: bold">CYP</td><td>{{ client.meals_schedule.number_of_children }}</td></tr>
+                          <tr><td style="font-weight: bold">Monday Delivery</td><td>{% if client.meals_schedule.monday_delivery %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</td></tr>
+                          <tr><td style="font-weight: bold">Wednesday Delivery</td><td>{% if client.meals_schedule.wednesday_delivery %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</td></tr>
+                          <tr><td style="font-weight: bold">Friday Delivery</td><td>{% if client.meals_schedule.friday_delivery %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</p></td></tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <a href="{{ client.meals_schedule.get_edit_url }}" class="btn btn-primary">Edit Delivery Schedule</a>
+
+                  <h4 class="mt-5">Delivery Exception Dates</h4>
+                  {% if meal_exception_dates %}
+                    <div class="row mt-3">
+                      <div class="col-4">
+                        <div class="table-responsive">
+                          <table class="table">
+                            {% for meal_exception_date in meal_exception_dates %}
+                              <tr>
+                                <td>{{ meal_exception_date }}</td>
+                                <td><a href="/meals/exceptiondate/{{ meal_exception_date.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                              </tr>
+                            {% endfor %}
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <p class="mt-2">This client does not have any Exception Dates.</p>
+                  {% endif %}
+                  <a href="/meals/exceptiondate/create?schedule={{ client.meals_schedule.pk }}" class="btn btn-primary">Add Exception Date</a>
+
+                  <h4 class="mt-5">Missed Deliveries</h4>
+                  {% if meal_missed_delivery_dates %}
+                    <div class="row mt-3">
+                      <div class="col-8">
+                        <div class="table-responsive">
+                          <table class="table">
+                            {% for meal_missed_delivery_date in meal_missed_delivery_dates %}
+                              <tr>
+                                <td>{{ meal_missed_delivery_date }}</td>
+                                <td>{{ meal_missed_delivery_date.notes }}</td>
+                                <td><a href="/meals/misseddeliverydate/{{ meal_missed_delivery_date.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                              </tr>
+                            {% endfor %}
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <p class="mt-2">This client has not missed any deliveries.</p>
+                  {% endif %}
+                  <a href="/meals/misseddeliverydate/create?schedule={{ client.meals_schedule.pk }}" class="btn btn-primary">Add Missed Delivery</a>
+
+                {% endif %}
+
+                <h4 class="mt-5">Ad Hoc Deliveries</h4>
+                {% if adhoc_meals_deliveries %}
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead class="thead-light">
+                        <tr>
+                          <th>Date</th>
+                          <th>Adults</th>
+                          <th>CYP</th>
+                          <th>Dietary Requirements</th>
+                          <th>Delivery Notes</th>
+                          <th>Edit</th>
+                          <th>Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for meals_delivery in adhoc_meals_deliveries %}
+                          <tr>
+                            <td>{{ meals_delivery.date }}</td>
+                            <td>{{ meals_delivery.number_of_adults }}</td>
+                            <td>{{ meals_delivery.number_of_children }}</td>
+                            <td>{{ meals_delivery.dietary_requirements }}</td>
+                            <td>{{ meals_delivery.delivery_notes|linebreaks }}</td>
+                            <td class="btn-link"><a href="{{ meals_delivery.get_edit_url }}?referrer=client">Edit</a></td>
+                            <td class="text-center"><a href="/meals/mealdelivery/{{ meals_delivery.pk }}/delete?referrer=client"><i class="fas fa-trash"></i></a></td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This client does not have any Ad Hoc Meal Deliveries.</p>
+                {% endif %}
+                <a href="/meals/mealdelivery/create?referrer=client&client={{client.pk}}&type=ad-hoc" class="btn btn-primary">Add Ad Hoc Meal Delivery</a>
+              </div>
+            </div>
+          </div>
+
+
+          <div id="shopping-deliveries" class="container tab-pane fade mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                {% if not client.food_shopping_schedule %}
+                  <p>This client does not have a Shopping Delivery Schedule.</p>
+                  <a href="/foodshopping/shoppingschedule/create?client={{ client.pk }}" class="btn btn-primary">Add Shopping Delivery Schedule</a>
+                {% else %}
+                  <h4>Delivery Schedule</h4>
+                  <div class="row mt-3">
+                    <div class="col-6">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <tr><td style="font-weight: bold; border: none">Status</td><td style="border: none">{{ client.food_shopping_schedule.get_status_display }}</td></tr>
+                          <tr><td style="font-weight: bold">Start Date</td><td>{{ client.food_shopping_schedule.start_date }}</td></tr>
+                          <tr><td style="font-weight: bold">End Date</td><td>{{ client.food_shopping_schedule.end_date }}</td></tr>
+                          <tr><td style="font-weight: bold">Dietary Requirements</td><td>{{ client.food_shopping_schedule.get_dietary_requirements|join:", "|capfirst }}</td></tr>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <tr><td style="font-weight: bold; border: none">Adults</td><td style="border: none">{{ client.food_shopping_schedule.number_of_adults }}</td></tr>
+                          <tr><td style="font-weight: bold">CYP</td><td>{{ client.food_shopping_schedule.number_of_children }}</td></tr>
+                          <tr><td style="font-weight: bold">Delivery Notes</td><td>{{ client.food_shopping_schedule.delivery_notes }}</td></tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <a href="{{ client.food_shopping_schedule.get_edit_url }}" class="btn btn-primary">Edit Delivery Schedule</a>
+
+                  <h4 class="mt-5">Delivery Exception Dates</h4>
+                  {% if food_shopping_exception_dates %}
+                    <div class="row mt-3">
+                      <div class="col-4">
+                        <div class="table-responsive">
+                          <table class="table">
+                            {% for food_shopping_exception_date in food_shopping_exception_dates %}
+                              <tr>
+                                <td>{{ food_shopping_exception_date }}</td>
+                                <td><a href="/foodshopping/exceptiondate/{{ food_shopping_exception_date.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                              </tr>
+                            {% endfor %}
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <p class="mt-2">This client does not have any Exception Dates.</p>
+                  {% endif %}
+                  <a href="/foodshopping/exceptiondate/create?schedule={{ client.food_shopping_schedule.pk }}" class="btn btn-primary">Add Exception Date</a>
+
+                  <h4 class="mt-5">Missed Deliveries</h4>
+                  {% if food_shopping_missed_delivery_dates %}
+                    <div class="row mt-3">
+                      <div class="col-12">
+                        <div class="table-responsive">
+                          <table class="table">
+                            {% for food_shopping_missed_delivery_date in food_shopping_missed_delivery_dates %}
+                              <tr>
+                                <td>{{ food_shopping_missed_delivery_date }}</td>
+                                <td>{{ food_shopping_missed_delivery_date.notes }}</td>
+                                <td><a href="/foodshopping/misseddeliverydate/{{ food_shopping_missed_delivery_date.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                              </tr>
+                            {% endfor %}
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <p class="mt-2">This client has not missed any deliveries.</p>
+                  {% endif %}
+                  <a href="/foodshopping/misseddeliverydate/create?schedule={{ client.food_shopping_schedule.pk }}" class="btn btn-primary">Add Missed Delivery</a>
+
+                {% endif %}
+
+
+                <h4 class="mt-5">Ad Hoc Deliveries</h4>
+                {% if adhoc_shopping_deliveries %}
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead class="thead-light">
+                        <tr>
+                          <th>Date</th>
+                          <th>Adults</th>
+                          <th>CYP</th>
+                          <th>Dietary Requirements</th>
+                          <th>Delivery Notes</th>
+                          <th>Edit</th>
+                          <th>Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for shopping_delivery in adhoc_shopping_deliveries %}
+                          <tr>
+                            <td>{{ shopping_delivery.date }}</td>
+                            <td>{{ shopping_delivery.number_of_adults }}</td>
+                            <td>{{ shopping_delivery.number_of_children }}</td>
+                            <td>{{ shopping_delivery.dietary_requirements }}</td>
+                            <td>{{ shopping_delivery.delivery_notes|linebreaks }}</td>
+                            <td class="btn-link"><a href="{{ shopping_delivery.get_edit_url }}?referrer=client">Edit</a></td>
+                            <td class="text-center"><a href="/foodshopping/shoppingdelivery/{{ shopping_delivery.pk }}/delete?referrer=client"><i class="fas fa-trash"></i></a></td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This client does not have any Ad Hoc Shopping Deliveries.</p>
+                {% endif %}
+                <a href="/foodshopping/shoppingdelivery/create?referrer=client&client={{client.pk}}&type=ad-hoc" class="btn btn-primary">Add Ad Hoc Shopping Delivery</a>
+              </div>
+            </div>
+          </div><!-- shopping-delivery -->
+
+
+
+          <div id="halal-shopping" class="container tab-pane fade mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                {% if not client.halal_shopping_schedule %}
+                  <p>This client does not have a Shopping Collection Schedule.</p>
+                  <a href="/halalshopping/shoppingschedule/create?client={{ client.pk }}" class="btn btn-primary">Add Shopping Collection Schedule</a>
+                {% else %}
+                  <h4>Collection Schedule</h4>
+                  <div class="row mt-3">
+                    <div class="col-6">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <tr><td style="font-weight: bold; border: none">Status</td><td style="border: none">{{ client.halal_shopping_schedule.get_status_display }}</td></tr>
+                          <tr><td style="font-weight: bold">Start Date</td><td>{{ client.halal_shopping_schedule.start_date }}</td></tr>
+                          <tr><td style="font-weight: bold">End Date</td><td>{{ client.halal_shopping_schedule.end_date }}</td></tr>
+                          <tr><td style="font-weight: bold">Dietary Requirements</td><td>{{ client.halal_shopping_schedule.get_dietary_requirements|join:", "|capfirst }}</td></tr>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <tr><td style="font-weight: bold; border: none">Adults</td><td style="border: none">{{ client.halal_shopping_schedule.number_of_adults }}</td></tr>
+                          <tr><td style="font-weight: bold">CYP</td><td>{{ client.halal_shopping_schedule.number_of_children }}</td></tr>
+                          <tr><td style="font-weight: bold">Time</td><td>{{ client.halal_shopping_schedule.get_time_display }}</td></tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <a href="{{ client.halal_shopping_schedule.get_edit_url }}" class="btn btn-primary">Edit Collection Schedule</a>
+
+                  <h4 class="mt-5">Collection Exception Dates</h4>
+                  {% if halal_shopping_exception_dates %}
+                    <div class="row mt-3">
+                      <div class="col-4">
+                        <div class="table-responsive">
+                          <table class="table">
+                            {% for halal_shopping_exception_date in halal_shopping_exception_dates %}
+                              <tr>
+                                <td>{{ halal_shopping_exception_date }}</td>
+                                <td><a href="/halalshopping/exceptiondate/{{ halal_shopping_exception_date.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                              </tr>
+                            {% endfor %}
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <p class="mt-2">This client does not have any Exception Dates.</p>
+                  {% endif %}
+                  <a href="/halalshopping/exceptiondate/create?schedule={{ client.halal_shopping_schedule.pk }}" class="btn btn-primary">Add Exception Date</a>
+
+                  <h4 class="mt-5">Missed Collections</h4>
+                  {% if halal_shopping_missed_collection_dates %}
+                    <div class="row mt-3">
+                      <div class="col-12">
+                        <div class="table-responsive">
+                          <table class="table">
+                            {% for halal_shopping_missed_collection_date in halal_shopping_missed_collection_dates %}
+                              <tr>
+                                <td>{{ halal_shopping_missed_collection_date }}</td>
+                                <td>{{ halal_shopping_missed_collection_date.notes }}</td>
+                                <td><a href="/halalshopping/missedcollectiondate/{{ halal_shopping_missed_collection_date.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                              </tr>
+                            {% endfor %}
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <p class="mt-2">This client has not missed any collections.</p>
+                  {% endif %}
+                  <a href="/halalshopping/missedcollectiondate/create?schedule={{ client.halal_shopping_schedule.pk }}" class="btn btn-primary">Add Missed Collection</a>
+
+                {% endif %}
+
+
+                <h4 class="mt-5">Ad Hoc Collections</h4>
+                {% if adhoc_shopping_collections %}
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead class="thead-light">
+                        <tr>
+                          <th>Date</th>
+                          <th>Adults</th>
+                          <th>CYP</th>
+                          <th>Dietary Requirements</th>
+                          <th>Edit</th>
+                          <th>Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for shopping_collection in adhoc_shopping_collections %}
+                          <tr>
+                            <td>{{ shopping_collection.date }}</td>
+                            <td>{{ shopping_collection.number_of_adults }}</td>
+                            <td>{{ shopping_collection.number_of_children }}</td>
+                            <td>{{ shopping_collection.dietary_requirements }}</td>
+                            <td class="btn-link"><a href="{{ shopping_collection.get_edit_url }}?referrer=client">Edit</a></td>
+                            <td class="text-center"><a href="/halalshopping/shoppingcollection/{{ shopping_collection.pk }}/delete?referrer=client"><i class="fas fa-trash"></i></a></td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This client does not have any Ad Hoc Shopping Collections.</p>
+                {% endif %}
+                <a href="/halalshopping/shoppingcollection/create?referrer=client&client={{client.pk}}&type=ad-hoc" class="btn btn-primary">Add Ad Hoc Shopping Collection</a>
+              </div>
+            </div>
+          </div><!-- halal-shopping -->
+
+
+
+          <div id="phonecalls" class="container tab-pane fade mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                {% if not client.phonecall_schedule %}
+                  <p>This client does not have a Phone Call Schedule.</p>
+                  <a href="/phonecalls/phonecallschedule/create?client={{ client.pk }}" class="btn btn-primary">Add Phone Call Schedule</a>
+                {% else %}
+                  <h4>Phone Call Schedule</h4>
+                  <div class="row mt-3">
+                    <div class="col-6">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <tr><td style="font-weight: bold; border: none">Status</td><td style="border: none">{{ client.phonecall_schedule.get_status_display }}</td></tr>
+                          <tr><td style="font-weight: bold">Start Date</td><td>{{ client.phonecall_schedule.start_date }}</td></tr>
+                          <tr><td style="font-weight: bold">End Date</td><td>{{ client.phonecall_schedule.end_date }}</td></tr>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <tr><td style="font-weight: bold">Weekday</td><td>{{ client.phonecall_schedule.get_weekday_display }}</td></tr>
+                          <tr><td style="font-weight: bold">Time of Day</td><td>{{ client.phonecall_schedule.get_time_of_day_display }}</td></tr>
+                          <tr><td style="font-weight: bold">Frequency</td><td>{{ client.phonecall_schedule.get_frequency_display }}</td></tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <a href="{{ client.phonecall_schedule.get_edit_url }}" class="btn btn-primary">Edit Phone Call Schedule</a>
+
+                  <h4 class="mt-5">Call Exception Dates</h4>
+                  {% if phonecall_exception_dates %}
+                    <div class="row mt-3">
+                      <div class="col-4">
+                        <div class="table-responsive">
+                          <table class="table">
+                            {% for phonecall_exception_date in phonecall_exception_dates %}
+                              <tr>
+                                <td>{{ phonecall_exception_date }}</td>
+                                <td><a href="/phonecalls/exceptiondate/{{ phonecall_exception_date.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                              </tr>
+                            {% endfor %}
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <p class="mt-2">This client does not have any Exception Dates.</p>
+                  {% endif %}
+                  <a href="/phonecalls/exceptiondate/create?schedule={{ client.phonecall_schedule.pk }}" class="btn btn-primary">Add Exception Date</a>
+
+                  <h4 class="mt-5">Missed Phone Calls</h4>
+                  {% if phonecall_missed_call_dates %}
+                    <div class="row mt-3">
+                      <div class="col-12">
+                        <div class="table-responsive">
+                          <table class="table">
+                            {% for phonecall_missed_call_date in phonecall_missed_call_dates %}
+                              <tr>
+                                <td>{{ phonecall_missed_call_date }}</td>
+                                <td>{{ phonecall_missed_call_date.notes }}</td>
+                                <td><a href="/phonecalls/missedcalldate/{{ phonecall_missed_call_date.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                              </tr>
+                            {% endfor %}
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <p class="mt-2">This client has not missed any phone calls.</p>
+                  {% endif %}
+                  <a href="/phonecalls/missedcalldate/create?schedule={{ client.phonecall_schedule.pk }}" class="btn btn-primary">Add Missed Phone Call</a>
+
+                  <h4 class="mt-5">Phone Call Notes</h4>
+                  {% if phonecall_notes %}
+                    <div class="row mt-3">
+                      <div class="col-12">
+                        <div class="table-responsive">
+                          <table class="table">
+                            {% for phonecall_note in phonecall_notes %}
+                              <tr>
+                                <td>{{ phonecall_note }}</td>
+                                <td>{{ phonecall_note.notes }}</td>
+                                <td><a href="/phonecalls/phonecallnotes/{{ phonecall_note.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                              </tr>
+                            {% endfor %}
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <p class="mt-2">There are no notes for this client's phone calls.</p>
+                  {% endif %}
+                  <a href="/phonecalls/phonecallnotes/create?schedule={{ client.phonecall_schedule.pk }}" class="btn btn-primary">Add Phone Call Notes</a>
+
+                {% endif %}
+
+                <h4 class="mt-5">Ad Hoc Phone Calls</h4>
+                {% if adhoc_phonecalls %}
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead class="thead-light">
+                        <tr>
+                          <th class="text-center">Date</th>
+                          <th class="text-center">Time</th>
+                          <th class="text-center">Edit</th>
+                          <th class="text-center">Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for phonecall in adhoc_phonecalls %}
+                          <tr>
+                            <td>{{ phonecall.date }}</td>
+                            <td>{{phonecall.get_time_of_day_display}}</td>
+                            <td class="btn-link"><a href="{{ phonecall.get_edit_url }}?referrer=client">Edit</a></td>
+                            <td class="text-center"><a href="/phonecalls/phonecall/{{ phonecall.pk }}/delete?referrer=client"><i class="fas fa-trash"></i></a></td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This client does not have any Ad Hoc Phone Calls.</p>
+                {% endif %}
+                <a href="/phonecalls/phonecall/create?referrer=client&client={{client.pk}}&type=ad-hoc" class="btn btn-primary">Add Ad Hoc Phone Call</a>
+              </div>
+            </div>
+          </div><!-- phonecalls -->
+
+          <div id="foodbank" class="tab-pane mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h4 class="mb-4">Foodbank Referrals</h4>
+                <a href="/foodbank/referral/create?client={{ client.pk }}&referrer=client" class="btn btn-primary">Add Referral</a>
+                {% if client.foodbank_referrals.all %}
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <thead class="thead-light">
+                            <tr>
+                              <th>Date</th>
+                              <th></th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          {% for referral in client.foodbank_referrals.all %}
+                            <tr>
+                              <td>{{ referral.date|date:"D d M Y" }}</td>
+                              <td><a href="/foodbank/referral/{{ referral.pk }}/edit?referrer=client"><i class="fas fa-pencil-alt"></i></a></td>
+                              <td><a href="/foodbank/referral/{{ referral.pk }}/delete?referrer=client"><i class="fas fa-trash"></i></a></td>
+                            </tr>
+                          {% endfor %}
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This client does not have any foodbank referrals</p>
+                {% endif %}
+              </div>
+            </div>
+          </div><!-- foodbank referrals -->
+
+
+          <div id="foodhub" class="container tab-pane fade mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h4>Food Hub Collections</h4>
+                {% if client.foodhub_collections.all %}
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead class="thead-light">
+                        <tr>
+                          <th>Date</th>
+                          <th>Adults</th>
+                          <th>CYP</th>
+                          <th>Dietary Requirements</th>
+                          <th>Notes</th>
+                          <th>Edit</th>
+                          <th>Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for collection in client.foodhub_collections.all %}
+                          <tr>
+                            <td>{{ collection.date }}</td>
+                            <td>{{ collection.number_of_adults }}</td>
+                            <td>{{ collection.number_of_children }}</td>
+                            <td>{{ collection.get_dietary_requirements|join:", "|capfirst }}</td>
+                            <td>{{ collection.notes|linebreaks }}</td>
+                            <td class="btn-link"><a href="{{ collection.get_edit_url }}?referrer=client">Edit</a></td>
+                            <td class="text-center"><a href="/foodhub/collection/{{ collection.pk }}/delete?referrer=client"><i class="fas fa-trash"></i></a></td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                {% else %}
+                  <p class="mt-2">This client does not have any Food Hub Collections.</p>
+                {% endif %}
+                <a href="/foodhub/collection/create?referrer=client&client={{client.pk}}" class="btn btn-primary">Add a Food Hub Collection</a>
+              </div>
+            </div>
+          </div><!-- food hub -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

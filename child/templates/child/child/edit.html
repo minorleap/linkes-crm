@@ -1,0 +1,87 @@
+{% extends "child/base.html" %}
+
+{% load crispy_forms_tags %}
+
+**child/edit.html**
+
+{% block title %}Edit CYP{% endblock %}
+
+{% block content %}
+  <div class="container text-center">
+    <h2 class="mt-5">Edit CYP</h2>
+    <form action="" method="post" class="justify-content-center">
+      {% csrf_token %}
+      {{ child_form.client|as_crispy_field }}
+      <h4 class="mt-5">CYP Details</h4>
+      <div class="row mt-5">
+        <div class="col-12">
+          {{ child_form.active|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-6">
+          {{ child_form.first_name|as_crispy_field }}
+          {{ child_form.last_name|as_crispy_field }}
+          {{ child_form.date_of_birth|as_crispy_field }}
+          {{ child_form.gender|as_crispy_field }}
+          {{ child_form.pronouns|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label>Client</label>
+            <input type="text" value="{{ child.client.first_name }} {{ child.client.last_name }}" class="textinput textInput form-control" readonly>
+          </div>
+          {{ child_form.relationship_to_client|as_crispy_field }}
+          {{ child_form.school|as_crispy_field }}
+          {{ child_form.school_class|as_crispy_field }}
+          <div class="mt-5">
+            {{ child_form.is_peer_volunteer|as_crispy_field }}
+          </div>
+        </div>
+      </div>
+      <h4 class="mt-5">Consent</h4>
+      <div class="row mt-5" id="consent">
+        <div class="col-6">
+          {{ child_form.activities_consent|as_crispy_field }}
+        </div>
+        <div class="col-6">
+          {{ child_form.photography_consent|as_crispy_field }}
+        </div>
+      </div>
+      <h4 class="mt-5">Disabilities</h4>
+      <div class="row mt-5" id="disability">
+        <div class="col-6 mt-5 text-left">
+          {{ child_form.has_no_disability|as_crispy_field }}
+          {{ child_form.has_physical_impairment|as_crispy_field }}
+          {{ child_form.has_sensory_impairment|as_crispy_field }}
+          {{ child_form.has_mental_health_condition|as_crispy_field }}
+          {{ child_form.has_learning_disability|as_crispy_field }}
+          {{ child_form.has_any_other_disability|as_crispy_field }}
+        </div>
+        <div class="col-6 text-left">
+          {{ child_form.disability_details|as_crispy_field }}
+        </div>
+      </div>
+      <h4 class="mt-5">Languages spoken</h4>
+      <div class="row">
+        <div class="col-12">
+          {{ child_form.languages_spoken|as_crispy_field }}
+        </div>
+      </div>
+      <h4 class="mt-5">Notes</h4>
+      <div class="row">
+        <div class="col-12">
+          {{ child_form.notes|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row mt-5 mb-5">
+        <div class="col-6">
+          <a href="/child/{{ child.pk }}" role="button" class="btn btn-primary btn-block">Cancel</a>
+        </div>
+        <div class="col-6">
+          <button type="submit" class="btn btn-block btn-primary">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

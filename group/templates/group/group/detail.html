@@ -1,0 +1,141 @@
+{% extends "group/base.html" %}
+
+{% block title %}Groups{% endblock %}
+
+{% block content %}
+
+<div class="wrapper">
+
+  <!-- Page Content  -->
+  <div id="content">
+    <div class="container-fluid">
+
+      <div class="container">
+
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#group-details">Group Details</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#group-bookings">Group Bookings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#group-sessions">Group Sessions</a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div id="group-details" class="tab-pane active mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tr><td style="font-weight: bold; border: none">Group Type</td><td style="border: none" class="btn-link"><a href="{{ group.group_type.get_absolute_url }}">{{ group.group_type.name }}</a></td></tr>
+                        <tr><td style="font-weight: bold">Start date</td><td>{{ group.start_date }}</td></tr>
+                        <tr><td style="font-weight: bold">End date</td><td>{{ group.end_date }}</td></tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tr><td style="font-weight: bold; border: none">Active</td><td style="border: none">{% if group.active %}<i class="fas fa-check-circle" style="color: #00AA00"></i>{% else %}<i class="fas fa-times-circle" style="color: #DD2222"></i>{% endif %}</td></tr>
+                        <tr><td style="font-weight: bold">Placed booked</td><td>{{ group.get_places_booked }}/{{ group.capacity }}</td></tr>
+                        {% if group.creche_capacity %}
+                          <tr><td style="font-weight: bold">Creche placed booked</td><td>{{ group.get_creche_places_booked }}/{{ group.creche_capacity }}</td></tr>
+                        {% endif %}
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <a href="{{ group.get_edit_url }}" class="btn btn-primary">Edit Group</a>
+
+              </div>
+            </div>
+          </div>
+
+          <div id="group-bookings" class="tab-pane mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                {% if group.bookings.all %}
+                <div class="row">
+                  <div class="col-12">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tr>
+                          <th style="border:none">Name</th>
+                          {% if group.creche_capacity %}
+                            <th style="border:none">Creche spaces</th>
+                          {% endif %}
+                          <th style="border:none">Names of children</th>
+                          <th style="border:none">Edit</th>
+                          <th style="border:none">Delete</th>
+                        </tr>
+                        {% for booking in bookings %}
+                          <tr>
+                            <td><a href="{{ booking.client.get_absolute_url }}" class="btn-link">{{ booking.client.first_name }} {{ booking.client.last_name }}</a></td>
+                            {% if group.creche_capacity %}
+                              <td>{{ booking.creche_spaces }}</td>
+                            {% endif %}
+                            <td>{{ booking.names_of_children|default:""}}</td>
+                            <td><a href="/group/groupbooking/{{ booking.pk }}/edit?referrer=group"><i class="fas fa-pencil-alt"></i></a></td>
+                            <td><a href="/group/groupbooking/{{ booking.pk }}/delete?referrer=group"><i class="fas fa-trash"></i></a></td>
+                          </tr>
+                        {% endfor %}
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                {% else %}
+                  <p class="mt-2">This group does not have any bookings.</p>
+                  <p>Open a client record to make a booking.</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div id="group-sessions" class="tab-pane mt-5">
+            <div class="card bg-light">
+              <div class="card-body">
+                {% if group.sessions.all %}
+                <div class="row">
+                  <div class="col-12">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tr>
+                          <th style="border:none">Date</th>
+                          <th style="border:none">Time</th>
+                          <th style="border:none">Attendance</th>
+                          <th style="border:none">Edit</th>
+                          <th style="border:none">Delete</th>
+                        </tr>
+                        {% for session in sessions %}
+                          <tr>
+                            <td class="btn-link"><a href="{{ session.get_absolute_url }}">{{ session.date|date:"D d M Y" }}</a></td>
+                            <td>{{ session.time|date:"H:i" }}</td>
+                            <td>{{ session.get_attendance|default:0 }}/{{ bookers|length}}</td>
+                            <td><a href="/group/groupsession/{{ session.pk }}/edit"><i class="fas fa-pencil-alt"></i></a></td>
+                            <td><a href="/group/groupsession/{{ session.pk }}/delete"><i class="fas fa-trash"></i></a></td>
+                          </tr>
+                        {% endfor %}
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                {% else %}
+                  <p class="mt-2">This group does not have any sessions</p>
+                {% endif %}
+                <a href="/group/groupsession/create?group={{ group.pk }}" class="btn btn-primary">Add Session</a>
+                <a href="/group/groupsession/createbulk?group={{ group.pk }}" class="btn btn-primary ml-3">Bulk Add Sessions</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

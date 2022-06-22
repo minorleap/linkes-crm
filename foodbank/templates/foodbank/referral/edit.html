@@ -1,0 +1,51 @@
+{% extends "foodbank/base.html" %}
+
+{% load crispy_forms_tags %}
+
+**referral/edit.html**
+
+{% block title %}Edit Foodbank Referral{% endblock %}
+
+{% block content %}
+  <div class="container text-center">
+  <h2 class="mt-5 mb-5">Edit Foodbank Referral</h2>
+  <form action="" method="post" class="justify-content-center" autocomplete="off">
+    {% csrf_token %}
+    {{ foodbank_referral_form.client|as_crispy_field }}
+
+    <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6">
+        <label>Client</label>
+        <input type="text" value="{{ client.first_name }} {{ client.last_name }}" class="textinput textInput form-control" readonly>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-3"></div>
+      <div class="col-6">
+        {{ foodbank_referral_form.date|as_crispy_field }}
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-3"></div>
+      <div class="col-3">
+        {% if request.GET.referrer == 'client' %}
+          <a href="{{ client.get_absolute_url }}#foodbank" role="button" class="btn btn-primary btn-block">Cancel</a>
+        {% else %}
+          <a href="/foodbank?date={{ request.GET.date }}" role="button" class="btn btn-primary btn-block">Cancel</a>
+        {% endif %}
+      </div>
+      <div class="col-3">
+        <button type="submit" class="btn btn-block btn-primary">Save</button>
+      </div>
+    </div>
+  </form>
+  </div>
+  <script>
+    $(function () {
+      $("#id_date").datepicker({
+        format:'dd/mm/yyyy',
+      });
+    });
+  </script>
+{% endblock %}

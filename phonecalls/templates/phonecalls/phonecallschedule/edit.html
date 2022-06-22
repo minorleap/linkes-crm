@@ -1,0 +1,56 @@
+{% extends "phonecalls/base.html" %}
+
+{% load crispy_forms_tags %}
+
+**phonecallschedule/edit.html**
+
+{% block title %}Phone Call Schedule{% endblock %}
+
+{% block content %}
+  <div class="container text-center">
+  <h2 class="mt-5">Phone Call Schedule</h2>
+  <form action="" method="post" class="justify-content-center" autocomplete="off">
+    {% csrf_token %}
+    {{ phonecall_schedule_form.client|as_crispy_field }}
+    <div class="row mt-5">
+      <div class="col-3"></div>
+      <div class="col-6">
+        <div class="form-group">
+          <label>Client</label>
+          <input type="text" value="{{ client.first_name }} {{ client.last_name }}" class="textinput textInput form-control" readonly>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-6">
+        {{ phonecall_schedule_form.status|as_crispy_field }}
+        {{ phonecall_schedule_form.start_date|as_crispy_field }}
+        {{ phonecall_schedule_form.frequency|as_crispy_field }}
+      </div>
+      <div class="col-6">
+        {{ phonecall_schedule_form.time_of_day|as_crispy_field }}
+        {{ phonecall_schedule_form.end_date|as_crispy_field }}
+        {{ phonecall_schedule_form.weekday|as_crispy_field }}        
+      </div>
+    </div>
+    <div class="row mt-5 mb-5">
+      <div class="col-6">
+        <a href="{{ client.get_absolute_url }}#phonecalls" role="button" class="btn btn-primary btn-block">Cancel</a>
+      </div>
+      <div class="col-6">
+        <button type="submit" class="btn btn-block btn-primary">Save</button>
+      </div>
+    </div>
+  </form>
+  </div>
+  <script>
+    $(function () {
+      $("#id_start_date").datepicker({
+        format:'dd/mm/yyyy',
+      });
+      $("#id_end_date").datepicker({
+        format:'dd/mm/yyyy',
+      });
+    });
+  </script>
+{% endblock %}

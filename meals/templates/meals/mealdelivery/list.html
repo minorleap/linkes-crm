@@ -1,0 +1,116 @@
+{% extends "meals/base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}Meal Deliveries{% endblock %}
+
+{% block content %}
+  <div class="wrapper">
+
+    <!-- Page Content  -->
+    <div id="content">
+      <div class="container-fluid">
+        <div class="card bg-light no-print">
+          <div class="card-body">
+            <div class="col-4">
+              <h4 class="card-title text-center">Delivery Date</h4>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <form id="filter-form" method="get" autocomplete="off">
+                  <div class="form-group">
+                    {% render_field meal_deliveries_filter.form.date %}
+                  </div>
+                </form>
+              </div>
+              <div class="col-4">
+                <a href="mealdelivery/generate/{{ date|date:'Y-m-d' }}" class="btn btn-primary">Confirm All Deliveries</a>
+              </div>
+              <div class="col-4">
+                <a href="mealdelivery/export/{{ request.GET.date }}" class="btn btn-success"><i class="fas fa-file-excel"></i> Export</a>
+                <button id="print-button" class="btn btn-secondary" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h4 class="mt-5 mb-3">Deliveries for {{ date|date:"l jS F Y"}}</h4>
+        <div class="table-responsive">
+          <table class="table">
+            <thead class="thead-light">
+              <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Emergency Contact</th>
+                <th>Emergency Contact Phone</th>
+                <th>Adults</th>
+                <th>CYP</th>
+                <th>Dietary Requirements</th>
+                <th>Health Status</th>
+                <th>Delivery Notes</th>
+                <th class="no-print">Edit</th>
+                <th class="no-print">Delete</th>
+                <th class="no-print">Confirmed</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for meal_delivery in meal_deliveries_filter.qs %}
+                {% with meal_delivery.client as client %}
+                  <tr>
+                    <td class="btn-link"><a href="{{ client.get_absolute_url }}">{{ client.first_name }} {{ client.last_name }}</a></td>
+                    <td>{{ client.get_address }}, {{ client.postcode }}</td>
+                    <td>{{ client.phone }}</td>
+                    <td>{{ client.emergency_contact_name|default_if_none:'' }}</td>
+                    <td>{{ client.emergency_contact_phone|default_if_none:'' }}</td>
+                    <td>{{ meal_delivery.number_of_adults }}</td>
+                    <td>{{ meal_delivery.number_of_children }}</td>
+                    <td>{{ meal_delivery.dietary_requirements|capfirst }}</td>
+                    <td>{{ client.health_status|capfirst }}</td>
+                    <td>{{ meal_delivery.delivery_notes }}</td>
+                    <td class="btn-link no-print"><a href="/meals/mealdelivery/{{ meal_delivery.pk }}/edit?referrer=delivery&date={{ request.GET.date}}">Edit</a></td>
+                    <td class="text-center no-print"><a href="/meals/mealdelivery/{{ meal_delivery.pk }}/delete?referrer=list&date={{ request.GET.date}}"><i class="fas fa-trash"></i></a></td>
+                    <td class="no-print text-center"><i class="fas fa-check-circle" style="color: #00AA00"></i></td>
+                  </tr>
+                {% endwith %}
+              {% endfor %}
+              {% for schedule in schedules %}
+                {% with schedule.client as client %}
+                  <tr>
+                    <td class="btn-link"><a href="{{ client.get_absolute_url }}">{{ client.first_name }} {{ client.last_name }}</a></td>
+                    <td>{{ client.get_address }}, {{ client.postcode }}</td>
+                    <td>{{ client.phone }}</td>
+                    <td>{{ client.emergency_contact_name|default_if_none:'' }}</td>
+                    <td>{{ client.emergency_contact_phone|default_if_none:'' }}</td>
+                    <td>{{ schedule.number_of_adults }}</td>
+                    <td>{{ schedule.number_of_children }}</td>
+                    <td>{{ schedule.get_dietary_requirements|join:", "|capfirst }}</td>
+                    <td>{{ client.health_status|capfirst }}</td>
+                    <td>{{ schedule.delivery_notes }}</td>
+                    <td class="btn-link no-print"></td>
+                    <td class="no-print"></td>
+                    <td class="no-print text-center"><i class="fas fa-times-circle" style="color: #DD2222"></td>
+                  </tr>
+                {% endwith %}
+              {% endfor %}
+              <tr><td style="font-weight: bold">Total: {{ total_count }}</td>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#id_date').on('change', function () {
+        $('#filter-form').submit();
+      });
+    });
+
+    $(function () {
+      $("#id_date").datepicker({
+        format:'yyyy-mm-dd',
+      });
+    });
+  </script>
+{% endblock %}
